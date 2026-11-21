@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<StackPane prefHeight="420.0" prefWidth="350.0" style="-fx-background-color: #f4f6f9;" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.login.AuthController">
+    <children>
+
+        <!-- ==================== 1. LOGIN PANE ==================== -->
+        <VBox fx:id="loginPane" alignment="CENTER" spacing="15.0" style="-fx-background-color: #2BCC8E;">
+            <padding>
+                <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+            </padding>
+            <children>
+                <Label text="Flashcard Master" textFill="#2d37a4">
+                    <font>
+                        <Font name="System Bold" size="24.0" />
+                    </font>
+                </Label>
+                <TextField fx:id="loginUserField" prefHeight="38.0" promptText="Username" style="-fx-background-radius: 5; -fx-border-color: #ccc; -fx-border-radius: 5;" />
+                <PasswordField fx:id="loginPassField" prefHeight="38.0" promptText="Password" style="-fx-background-radius: 5; -fx-border-color: #ccc; -fx-border-radius: 5;" />
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleLogin" prefHeight="38.0" style="-fx-background-color: #0078d7; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5; -fx-cursor: hand;" text="Log In" />
+                <Label fx:id="loginMessageLabel" wrapText="true" />
+                <Hyperlink onAction="#showSignUp" text="Don't have an account? Sign Up" textFill="#2d37a4" />
+            </children>
+        </VBox>
+
+        <!-- ==================== 2. SIGN-UP PANE ==================== -->
+        <VBox fx:id="signUpPane" alignment="CENTER" spacing="15.0" visible="false">
+            <padding>
+                <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+            </padding>
+            <children>
+                <Label text="Create Account">
+                    <font>
+                        <Font name="System Bold" size="24.0" />
+                    </font>
+                </Label>
+                <TextField fx:id="signUpUserField" prefHeight="38.0" promptText="Choose a Username" style="-fx-background-radius: 5; -fx-border-color: #ccc; -fx-border-radius: 5;" />
+                <PasswordField fx:id="signUpPassField" prefHeight="38.0" promptText="Create Password" style="-fx-background-radius: 5; -fx-border-color: #ccc; -fx-border-radius: 5;" />
+                <PasswordField fx:id="signUpConfirmField" prefHeight="38.0" promptText="Confirm Password" style="-fx-background-radius: 5; -fx-border-color: #ccc; -fx-border-radius: 5;" />
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleSignUp" prefHeight="38.0" style="-fx-background-color: #0078d7; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5; -fx-cursor: hand;" text="Sign Up" />
+                <Label fx:id="signUpMessageLabel" wrapText="true" />
+                <Hyperlink onAction="#showLogin" text="Already have an account? Log In" />
+            </children>
+        </VBox>
+
+        <!-- ==================== 3. DASHBOARD PANE ==================== -->
+        <VBox fx:id="dashboardPane" alignment="CENTER" spacing="15.0" visible="false">
+            <padding>
+                <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+            </padding>
+            <children>
+                <Label fx:id="welcomeLabel" text="Hello, User!">
+                    <font>
+                        <Font name="System Bold" size="22.0" />
+                    </font>
+                </Label>
+                <Label text="You are logged in (No Database Mode)." textFill="#666666" />
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleLogout" prefHeight="38.0" style="-fx-background-color: #d9534f; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5; -fx-cursor: hand;" text="Log Out" />
+            </children>
+        </VBox>
+
+    </children>
+</StackPane>
