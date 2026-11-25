@@ -7,76 +7,25 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
-import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-
 public class AuthController {
 
-    // Panes
     @FXML private VBox loginPane;
     @FXML private VBox signUpPane;
     @FXML private VBox dashboardPane;
 
-    // Login Controls
     @FXML private TextField loginUserField;
     @FXML private PasswordField loginPassField;
     @FXML private Label loginMessageLabel;
 
-    // Sign-Up Controls
     @FXML private TextField signUpUserField;
     @FXML private PasswordField signUpPassField;
     @FXML private PasswordField signUpConfirmField;
     @FXML private Label signUpMessageLabel;
 
-    // Dashboard Controls
     @FXML private Label welcomeLabel;
 
-    // User storage & local file name
-    private final Map<String, String> userDatabase = new HashMap<>();
-    private static final String FILE_PATH = "users.properties";
-
-    @FXML
-    public void initialize() {
-        loadUsersFromFile();
-
-        // Add default admin account only if no users exist yet
-        if (userDatabase.isEmpty()) {
-            userDatabase.put("admin", "1234");
-            saveUsersToFile();
-        }
-    }
-
-    // ==================== FILE STORAGE METHODS ====================
-
-    private void loadUsersFromFile() {
-        File file = new File(FILE_PATH);
-        if (!file.exists()) return;
-
-        Properties props = new Properties();
-        try (FileInputStream in = new FileInputStream(file)) {
-            props.load(in);
-            for (String username : props.stringPropertyNames()) {
-                userDatabase.put(username, props.getProperty(username));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void saveUsersToFile() {
-        Properties props = new Properties();
-        props.putAll(userDatabase);
-
-        try (FileOutputStream out = new FileOutputStream(FILE_PATH)) {
-            props.store(out, "Saved User Accounts");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    // ==================== BUTTON ACTIONS ====================
+    // Delegate all data & logic to UserManager
+    private final UserManager userManager = new UserManager();
 
     @FXML
     private void handleLogin() {
@@ -85,8 +34,14 @@ public class AuthController {
 
         if (user.isEmpty() || pass.isEmpty()) {
             setMessage(loginMessageLabel, "Please fill in all fields.", true);
-        } else if (userDatabase.containsKey(user) && userDatabase.get(user).equals(pass)) {
-            welcomeLabel.setText("Hello, " + user + "!");
+            return;
+        }
+
+        if (userManager.authenticate(user, pass)) {
+            // Pulls directly from the active User object
+            User loggedInUser = userManager.getCurrentUser();
+            welcomeLabel.setText("Hello, " + loggedInUser.getUsername() + "!");
+
             loginUserField.clear();
             loginPassField.clear();
             loginMessageLabel.setText("");
@@ -104,13 +59,11 @@ public class AuthController {
 
         if (user.isEmpty() || pass.isEmpty() || confirm.isEmpty()) {
             setMessage(signUpMessageLabel, "All fields are required.", true);
-        } else if (userDatabase.containsKey(user)) {
-            setMessage(signUpMessageLabel, "Username already exists.", true);
         } else if (!pass.equals(confirm)) {
             setMessage(signUpMessageLabel, "Passwords do not match.", true);
+        } else if (!userManager.registerUser(user, pass)) {
+            setMessage(signUpMessageLabel, "Username already exists.", true);
         } else {
-            userDatabase.put(user, pass);
-            saveUsersToFile(); // Saves immediately to users.properties!
             setMessage(signUpMessageLabel, "Account created! You can now log in.", false);
             signUpUserField.clear();
             signUpPassField.clear();
@@ -120,6 +73,7 @@ public class AuthController {
 
     @FXML
     private void handleLogout() {
+        userManager.logout();
         switchPane(loginPane);
     }
 
